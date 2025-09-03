@@ -1,35 +1,17 @@
-\FROM ubuntu:22.04
+FROM ubuntu:22.04
 
-# Instalar dependencias
-RUN apt-get update && apt-get install -y \
-    curl \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y curl ca-certificates && rm -rf /var/lib/apt/lists/*
 
-# Instalar Ollama
 RUN curl -fsSL https://ollama.com/install.sh | sh
 
-# Variables de entorno
+# Variables críticas para Railway
 ENV OLLAMA_HOST=0.0.0.0
 ENV OLLAMA_ORIGINS=*
 
-# Script de inicio que SÍ funciona
+# Script optimizado para Railway
 RUN echo '#!/bin/bash\n\
-set -e\n\
-echo "=== Iniciando Ollama ==="\n\
-echo "Puerto: ${PORT:-11434}"\n\
-\n\
-# Configurar el host con el puerto de Railway\n\
-export OLLAMA_HOST="0.0.0.0:${PORT:-11434}"\n\
-export OLLAMA_ORIGINS="*"\n\
-\n\
-echo "OLLAMA_HOST: $OLLAMA_HOST"\n\
-echo "Iniciando servidor..."\n\
-\n\
-# Iniciar Ollama\n\
-exec ollama serve\n\
-' > /start.sh && chmod +x /start.sh
-
-EXPOSE 11434
+export OLLAMA_HOST="0.0.0.0:${PORT}"\n\
+echo "Iniciando Ollama en puerto ${PORT}"\n\
+exec ollama serve' > /start.sh && chmod +x /start.sh
 
 CMD ["/start.sh"]
