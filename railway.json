@@ -1,5 +1,7 @@
 {
   "deploy": {
-    "healthcheckTimeout": 300
+    "healthcheckPath": "/api/tags",
+    "healthcheckTimeout": 600,
+    "restartPolicyType": "on_failure"
   }
 }
